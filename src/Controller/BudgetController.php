@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/budget')]
+#[Route('/budgets')]
 class BudgetController extends AbstractController
 {
     private $em;
@@ -22,9 +22,11 @@ class BudgetController extends AbstractController
         $this->em = $em;
     }
 
-    #[Route('/index', name: 'app_budget_index', methods: ['GET'])]
+    #[Route('/', name: 'budget_index', methods: ['GET'])]
     public function index(BudgetRepository $budgetRepository): Response
     {
+        echo 'test';
+        
         return $this->json($budgetRepository->findAll());
     }
 
