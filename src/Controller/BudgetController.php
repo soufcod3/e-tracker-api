@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/budgets')]
+#[Route('api/budgets')]
 class BudgetController extends AbstractController
 {
     private $em;
@@ -24,10 +24,13 @@ class BudgetController extends AbstractController
 
     #[Route('/', name: 'budget_index', methods: ['GET'])]
     public function index(BudgetRepository $budgetRepository): Response
-    {
-        echo 'test';
-        
-        return $this->json($budgetRepository->findAll());
+    {   
+        $query = $this->em->createQuery(
+            'SELECT b FROM App\Entity\Budget b'
+        );
+        $budgets = $query->getArrayResult();
+
+        return new JsonResponse($budgets);
     }
 
     #[Route('/featured', name: 'app_budget_index', methods: ['GET'])]
