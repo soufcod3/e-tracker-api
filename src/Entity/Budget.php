@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\BudgetRepository;
 use DateTime;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BudgetRepository::class)]
@@ -36,11 +38,15 @@ class Budget
     #[ORM\Column]
     private bool $featured = false;
 
+    #[ORM\OneToMany(mappedBy: 'budget', targetEntity: Expense::class)]
+    private Collection $expenses;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
         $this->startingAt = new DateTimeImmutable();
         $this->endingAt = new DateTimeImmutable();
+        $this->expenses = new ArrayCollection();
     }
 
     public function getId(): int
@@ -128,6 +134,36 @@ class Budget
     public function setFeatured(bool $featured): self
     {
         $this->featured = $featured;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Expense>
+     */
+    public function getExpenses(): Collection
+    {
+        return $this->expenses;
+    }
+
+    public function addExpense(Expense $expense): self
+    {
+        if (!$this->expenses->contains($expense)) {
+            $this->expenses->add($expense);
+            $expense->setBudget($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExpense(Expense $expense): self
+    {
+        if ($this->expenses->removeElement($expense)) {
+            // set the owning side to null (unless already changed)
+            if ($expense->getBudget() === $this) {
+                $expense->setBudget(null);
+            }
+        }
 
         return $this;
     }
