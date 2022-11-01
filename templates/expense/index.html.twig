@@ -13,6 +13,7 @@
                 <th>Date</th>
                 <th>Description</th>
                 <th>Category</th>
+                <th>Budget Id</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -24,6 +25,7 @@
                 <td>{{ expense.date ? expense.date|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ expense.description }}</td>
                 <td>{{ expense.category }}</td>
+                <td>{{ expense.budget ? expense.budget.id : 'NULL'}}</td>
                 <td>
                     <a href="{{ path('app_expense_show', {'id': expense.id}) }}">show</a>
                     <a href="{{ path('app_expense_edit', {'id': expense.id}) }}">edit</a>

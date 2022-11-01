@@ -36,7 +36,6 @@ class BudgetController extends AbstractController
     #[Route('/featured', name: 'app_budget_index', methods: ['GET'])]
     public function featured(BudgetRepository $budgetRepository): Response
     {
-        // $featured = $budgetRepository->findBy(['featured' => true]);
         $query = $this->em->createQuery(
             'SELECT b FROM App\Entity\Budget b WHERE b.featured = true'
         );

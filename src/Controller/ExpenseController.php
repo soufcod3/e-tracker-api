@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Budget;
 use App\Entity\Expense;
 use App\Form\ExpenseType;
+use App\Repository\CategoryRepository;
 use App\Repository\ExpenseRepository;
 use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\IsNull;
 use Symfony\Component\Validator\Constraints\NotNull;
 
-#[Route('api/expense')]
+#[Route('api/expenses')]
 class ExpenseController extends AbstractController
 {
     #[Route('/', name: 'app_expense_index', methods: ['GET'])]
@@ -29,9 +30,8 @@ class ExpenseController extends AbstractController
     }
     // Je dois supprimer methods[POST] pour ne plus avoir l'erreur GET ????!!!
     #[Route('/add/{id}', name: 'app_expense_new')]
-    public function new(Request $request, ExpenseRepository $expenseRepository, Budget $budget): Response
+    public function new(Request $request, ExpenseRepository $expenseRepository, Budget $budget, CategoryRepository $categoryRepo): Response
     {
-        // $request->header('Access-Control-Allow-ORigin', 1, 200);
         $data = json_decode($request->getContent(), true);
 
         if (null == $data) {
@@ -51,6 +51,9 @@ class ExpenseController extends AbstractController
         $expense->setDate($date);
         $expense->setDescription($data['expense_description']);
         $expense->setBudget($budget);
+        if ($data['expense_category']) {
+            $expense->setCategory($categoryRepo->findOneById($data['expense_category']));
+        }
         $expenseRepository->save($expense, true);
 
         return $this->json($expense);
