@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ExpenseRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExpenseRepository::class)]
@@ -27,6 +28,11 @@ class Expense
 
     #[ORM\ManyToOne(inversedBy: 'expenses')]
     private ?Budget $budget = null;
+
+    public function __construct()
+    {
+        $this->date = new DateTimeImmutable();
+    }
 
     public function getId(): int
     {
